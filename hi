@@ -1,0 +1,477 @@
+\documentclass[a4paper,norsk, 10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage[norsk]{babel}
+\usepackage{a4wide}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{amssymb}
+\usepackage[dvips]{epsfig}
+\usepackage[toc,page]{appendix}
+\usepackage[T1]{fontenc}
+\usepackage{cite} % [2,3,4] --> [2--4]
+\usepackage{shadow}
+\usepackage{hyperref}
+\usepackage{titling}
+\usepackage{marvosym }
+\usepackage{subcaption}
+\usepackage[noabbrev]{cleveref}
+\usepackage{cite}
+
+
+\setlength{\droptitle}{-10em}   % This is your set screw
+
+\setcounter{tocdepth}{2}
+
+\lstset{language=c++}
+\lstset{alsolanguage=[90]Fortran}
+\lstset{alsolanguage=Python}
+\lstset{basicstyle=\small}
+\lstset{backgroundcolor=\color{white}}
+\lstset{frame=single}
+\lstset{stringstyle=\ttfamily}
+\lstset{keywordstyle=\color{red}\bfseries}
+\lstset{commentstyle=\itshape\color{blue}}
+\lstset{showspaces=false}
+\lstset{showstringspaces=false}
+\lstset{showtabs=false}
+\lstset{breaklines}
+\title{STK1100 Oblig 1}
+\author{Daniel Heinesen, daniehei}
+\begin{document}
+\maketitle
+
+\section*{Oppgave 1)}
+\subsection*{a)}
+
+$$
+X = \text{Antall komponenter som testes frem til og med første defekte}
+$$
+
+Vi ser at de første $x$ vi tester, må de første $x-1$ ikke være defekte. Sjansen for at komponentene ikke er defekte er $(1-p)$. Så sannsynligheten for at dette inntreffer er $(1-p)^{x-1}$. Den siste vi tester må så være defekt, som har en sannsynelighet $p$. Dette gir oss en punktsannsynlighet
+
+$$
+p_X(x;p) = p(1-p)^{x-1}
+$$
+
+Dette er en negativ binomisk fordelig, hvor antall suksesser er $1$. Vi kan derfor også finne punktsannsynligheten gjennom denne fordelingn.
+
+\subsection*{b)}
+Den momentgenererende funksjonen for denne fordeligen er gitt ved
+
+$$
+M_X(t) = E[e^{tX}] = \sum_x e^{tx}p_X(x;p) = \sum_x e^{tx}p(1-p)^{x-1}
+$$
+
+Vi bruker så formelen for en uendelig geometrisk serie og får
+
+$$
+M_X(t) = pe^t\sum_x e^{t(x-1)}(1-p)^{x-1} = \frac{pe^t}{1-e^t(1-p)}
+$$
+
+Vi kan nå finne $E[X]$ og $E[X]$ ved hjelp av den momentgenererende funksjonen. Først finner vi:
+
+$$
+M_X'(t) = \frac{pe^t}{(1-(1-p)e^t)^2}
+$$
+
+$$
+M_X''(t) = \frac{pe^t(1+(1-p)e^t)}{(1-(1-p)e^t)^3}
+$$
+
+Vi finner så at
+
+$$
+E[X] = M_X'(0) = \frac{p}{(1-(1-p))^2} = \frac{1}{p}
+$$
+
+$$
+E[X^2] = M_X''(0) = \frac{p(1+(1-p))}{(1-(1-p))^3} = \frac{2-p}{p^2}
+$$
+
+Vi kan så regne ut variasjonen:
+
+$$
+V[X] = E[X^2] - E[X]^2 = \frac{2-p}{p^2} - \frac{1}{p^2} = \frac{1-p}{p^2}
+$$
+
+
+\subsection*{c)}
+
+$$
+Y = \text{Antall defekte komponenter i et utvalg.}
+$$
+
+Variablen over, $Y$, beskriver et eksperiment hvor vi har et antall forsøk hvor vi enten kan få suksess(defekt) eller ikke-suksess(ikke defekt).Hvorvidt komponentene er defekte eller ikke tar vi til å være uavhenging, og sannsynligheten for å finne en defekt komponent er $p$. Denne variablen forfyller alle kravene til en binomisk fordelig, og er derfor det. For denne oppgaven bruker vi at $p = 0.02$ og $n = 200$
+
+\subsection*{d)}
+
+Dette er programmert i python, og finnes i \textit{opp1c.py}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{1d.png}
+\caption{Den binomiske fordelingen til Y}
+\end{figure}
+
+\subsection*{e)}
+
+Fra side $134$ i læreboken finner vi at
+
+$$
+E[Y] = np = 200\cdot 0.02 = \underline{\underline{4}}
+$$
+og
+
+$$
+V[Y] = np(1-p) = 4\cdot(1-0.02) = \underline{\underline{3.92}}
+$$
+
+\subsection*{f)}
+
+En binomisk fordelig går mot en Poisson-fordeling når $n \rightarrow \infty$ og $p \rightarrow 0$. For vært eksperiment er vi lang unna, men som en tommelregel kan den binomiske fordelingen bli godt tilnærmet av Poisson-fordelingen når $n > 50$ og $np < 5$. Og siden vi har 
+
+$$
+n = 200 > 50
+$$
+
+$$
+np = 4 < 5
+$$
+
+Så er en Poisson-fordeling en god tilnærming til fordelingen til $Y$.
+
+\newpage
+\subsection*{g)}
+
+For en Poisson-fordeling 
+
+$$
+p(y;\lambda) = \frac{e^{-\lambda} \lambda^y}{y!}
+$$
+
+Hvor $\lambda$ er forventningsverdien til $Y$, som gjør at vi har
+
+$$
+\lambda = np = 4
+$$
+
+og 
+
+$$
+p(x) = \frac{e^{-4} 4^y}{y!}
+$$
+
+
+\subsection*{h)}
+
+Dette er programmert i python, og finnes i \textit{opp1c.py}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{binomialPoisson.png}
+\caption{Jeg har nå valgt å plotte fordelingene som rene grafer, slik at det blir lettere å sammenlikne. Vi kan se at de ikke er helt identiske -- som vi ikke forventer --, men tilnærmingen er veldig bra.}
+\end{figure}
+
+\newpage
+
+\section*{Oppgave 2)}
+
+\subsection*{a)}
+
+Vi har $X$ med sannsynlighetsfordelingen
+
+$$
+f(x) =
+\begin{cases}
+\theta^{-1}x^{-\frac{\theta+1}{\theta}} & x \geq 1\\
+0 & x < 1
+\end{cases}
+$$
+
+Den kumulative fordelingen er gitt ved
+
+$$
+F(x) = \int_0^x f(y) dy = \int_1^x \frac{y^{-\frac{\theta+1}{\theta}}}{\theta} dy 
+$$
+
+Dette reduseres til
+
+$$
+F(x) = -y^{-1/\theta}\bigg\vert_1^x = -x^{-1/\theta} - (-1) = 1 -x^{-1/\theta}
+$$
+
+\subsection*{b)}
+
+For $\theta = 0.45$ kan vi lett finne
+
+$$
+P(2 \leq X \leq 5) = \int_2^5 f(x) dx = F(5)-F(2) = -5^{-1/0.45} + 2^{-1/0.45} = \underline{\underline{0.186}}
+$$
+
+\subsection*{c)}
+
+Medianen til en kontinuelig fordeling er det punktet $x$ hvor arealet til fordelingen er lik på hverside. Dette kan regnes ut på to måter
+
+$$
+1) \qquad \int_{1}^x f(x) dx = \int_x^{\infty} f(x) dx
+$$
+$$
+2) \qquad P(X \geq x) = P(X \leq x) = \frac{1}{2}
+$$
+
+Det er lett å vise at disse ble det samme. Men den enkleste er 2). Fra den får vi 
+
+$$
+P(X \geq x) = F(x) = 1-x^{-1/\theta} = \frac{1}{2}
+$$
+
+$$
+\Rightarrow x = 2^{\theta}
+$$
+
+Så $x = 2^{\theta}$ er medianen til fordelingen.
+
+\subsection*{d)}
+Vi ønsker så å finne forventningsverdien til fordelingen:
+
+$$
+E[X] = \int_{-\infty}^{\infty} xf(x) dx = \int_1^{\infty} \frac{x^{-\frac{\theta +1}{\theta} + 1}}{\theta} dx
+$$
+$$
+= \frac{1}{-\frac{1}{\theta} + 1}\frac{x^{-1/\theta + 1}}{\theta} \bigg\vert_1^{\infty} = \frac{1}{1-\theta}
+$$
+
+Det er viktig å merke seg at siden $\theta < 1/2$ så er $\lim_{x \rightarrow \infty} x^{-1/\theta + 1} = 0$, om ikke kunne integralet divergert.
+
+
+\subsection*{e)}
+
+For å finne variansen må vi først finne
+
+$$
+E[X^2] = \int_{-\infty}^{\infty} x^2f(x) dx = \int_1^{\infty} \frac{x^{-\frac{\theta +2}{\theta} + 1}}{\theta} dx
+$$
+
+$$
+= \int_1^{\infty} \frac{x^{\frac{\theta -1}{\theta}}}{\theta} dx = \frac{1}{2\theta - 1}x^{\frac{2\theta - 1}{\theta}} \bigg\vert_1^{\infty} = \frac{1}{2\theta - 1}
+$$
+
+Akkurat som i deloppgaven over, vil faktumet at $\theta < 1/2$ forsikre oss om at integralet divergerer, siden $\frac{2\theta - 1 }{\theta} < 0$, som gjør at $\lim_{x \rightarrow \infty} x^{\frac{2\theta -1}{\theta}} = 0$.\\
+
+Vi kan nå finne variansen
+
+$$
+V[X] = E[X^2] - E[X]^2 = \frac{1}{2\theta -1} - \frac{1}{(1-\theta) ^2}
+$$ 
+
+
+\section*{Oppgave 3)}
+\subsection*{a)}
+
+For å finne den kumulative fordelingsfunksjonen til $X$ legger vi merke til at 
+
+\begin{equation}
+F(x) = P( X\leq x) = 1 - P(X>x)
+\label{eq:dodlighetF}
+\end{equation}
+
+$q_{x}$ er sannsynligheten for at en x år gammel person skal dø før personen fyller $x + 1$ år. Det betyr at sjansen for at personen overlever dette året er 
+
+$$
+1 - q_x
+$$
+
+$P(X>x)$ er sannsynligheten for at personen blir eldre enn $x$, dette betyr at personen på ha overlevd alle årene opp til og med år $x$. Dette er produktet av sannsynligheten for å overleve de enkelte årene. Vi er bare interessert i sjansen overlever når de er over $35$ år, så:
+
+$$
+P(X>x) = \prod_{y = 0}^x(1-q_{35+y})
+$$
+
+Vi kan så sette dette inn i \eqref{eq:dodlighetF} og ser at:
+
+\begin{equation}
+F(x) = 1 - P(X>x) = 1 - \prod_{y = 0}^x(1-q_{35+y})
+\end{equation}
+
+\subsection*{b)}
+
+Punktsannsynligheten er sannsynligheten for at personen ble maks $x$ år gammel, men eldre enn $x-1$ år gammel, som gir oss:
+
+$$
+p(x) = P(X=x) = P(x-1<X\leq x) = F(x) - F(x-1)
+$$
+
+Siden vi sier at ingen kan bli eldre enn $106$ år gammel, så kan $x$ bare være definert i intervallet $0\leq x \leq 71$.
+
+\subsection*{c)}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{3c.png}
+\caption{Punktsannsynligheten $p(x)$ for å finne en person med alderen $x + 35$ år.}
+\end{figure}
+
+Vi kan se at denne punktsannsynligheten er tilnærmet en Poisson-fordeling.
+
+\subsection*{d)}
+
+$h(x)$ er nåverdien til den samlede pensjonsutbetalingen. Dør mannen før han fyller $35$ år vil han ikke få noe utbetalt. Får han ikke noe utbetalt, vil nåverdien til dette beløpet også være 0. Det betyr at for $X\leq 34$ $h(X) = 0$.\\
+
+Nåverdien er hvor mye penger som må settes inn i banken for at det etter $k$ år er blitt beløpet $K$. I vårt tilfelle mannen få $K = 100 000$ i året. Nå verdien for disse pengene er gitt som
+
+$$
+\frac{100000}{1.03^k}
+$$  
+
+med $3\%$ rente. Han får dette beløpet verdt år etter han har fylt $70$ år. For det første beløpet han får utbetalt har pengene stått $35$ år i banken, og for det andre har de stått der $36$ år. Den totale mengden penger han får utbetalt er $\sum_{x = 35}^{x}100000$ kr. ($100000$ for hvert år etter 70 år). Vi må finne nåverdien for hvert av disse årene. Dette betyr at vi får nåverdien:
+
+\begin{equation}
+h(X) = \sum_{x = 35}^{x}\frac{100000}{1.03^k}
+\label{eq:h}
+\end{equation}
+
+Vi kjenner igjen at dette er en geometisk rekke. Formelen for en slik rekke sier at
+
+$$
+\sum_a^b r^k = \frac{r^a - r^{b+1}}{1-r}
+$$
+
+Bruker vi dette med \eqref{eq:h} finner vi
+
+$$
+h(X)  = \sum_{x = 35}^{x}\frac{10000}{1.03^k} = 100000 \frac{\frac{1}{1.03^{35}} - \frac{1}{1.03^{x+1}}}{1 - \frac{1}{1.03}}
+$$
+$$
+= \frac{100000}{1.03^{35}}\frac{1-(1/1.03)^{x+1-35}}{1 - (1/1.03)}
+$$
+
+Dette gir oss endelig at nåverdien er
+
+\begin{equation}
+h(X) = \frac{100000}{1.03^{35}}\frac{1-(1/1.03)^{x-34}}{1 - (1/1.03)}
+\label{eq:nåverdi}
+\end{equation}
+
+For $X\geq 35$.
+
+\subsection*{e)}
+
+Forventingsverdien til nåverdien $h(X)$ er gitt ved
+
+$$
+E[h(X)] = \sum_{x = 0}^{71}h(X)p(x)
+$$
+
+Men siden $h(X) = 0$ for $X<35$ forenkles summen til
+$$
+E[h(X)] = \sum_{x = 35}^{71}h(x)p(x)
+$$
+
+Vi kan så regne ut dette 
+
+$$
+\sum_{x = 35}^{71}h(X)p(x) = \sum_{x = 35}^{71}\frac{100000}{1.03^{35}}\frac{1-(1/1.03)^{x-34}}{1 - (1/1.03)} p(x)
+$$
+$$
+= \frac{100000}{1.03^{35}}\frac{\sum_{x = 35}^{71}\left(1 - (1/1.03)^{x-34}\right)}{1-(1/1.03)} p(x)
+$$
+
+Vi kan se at $\sum_{x = 35}^{71} p(x) = P(X\geq 35)$, vi får derfor
+
+\begin{equation}
+E[h(X)] = \frac{100000}{1.03^{35}}\cdot\frac{P(X\geq 35) - \sum_{x = 35}^{71}(1/1.03)^{x-34}p(x)}{1-(1/1.03)} 
+\end{equation}
+
+\subsection*{f)}
+
+Løser jeg dette med koden du finner nedest i dokumentet, finner jeg at
+
+$$
+E[h(X)] = \underline{\underline{387142}} \text{ kr}
+$$
+
+\subsection*{g)}
+
+Som i deloppgave \textit{d)} er nåverdien gitt som 
+
+$$
+\frac{K}{1.03^k}
+$$
+
+Der $K$ er premien, $1.03$ er renten og $k$ er antall år. \\
+
+Den samlede nåverdien er summen mannen betaler til han er $69$ år eller dør. Så om $X<35$, betaler han til han dør i en alder av $k = x$. Men om han blir $70$ år eldre ($X\geq 35$) betaler han bare til han er $69$ år -- ved $70$ år slutter han å betale, og får heller utbetalt fra forsikringen--. Dette betyr at han betaler til $k = \min(X,34)$. Om nåverdien er gitt som $K\cdot g(X)$, så finner vi at
+
+\begin{equation}
+g(X) = \sum_{k = 0}^{\min(X,34)}\frac{1}{1.03^k}
+\end{equation}
+
+\subsection*{h)}
+
+Vi gjenkjenner $g(X)$ som enda en geometrisk rekke, så vi skriver derfor den om som
+
+$$
+g(X) = \frac{1-(1/1.03)^{\min(X,34)+1}}{1-(1/1.03)}
+$$
+
+Vi kan så regne ut forventningsverdien til $g(X)$
+
+$$
+E[g(X)] = \sum_{x = 0}^{71}g(X)p(x) = \sum_{x = 0}^{71}\frac{1-(1/1.03)^{\min(X,34)+1}}{1-(1/1.03)} p(x)
+$$
+
+Vi kan splitte summen $\sum_{x = 0}^{71}(1/1.03)^{\min(X,34)}$ inn i 2 deler: Den som gjelder for $X<35$ og den delen hvor mannen har betalt i $34$ år, og ikke lenger betaler premie($X \geq 35$):
+
+$$
+E[g(X)] = \frac{1}{1-(1/1.03)}\left[\underbrace{\sum_{x = 0}^{71} p(x)}_{= 1} - \left(\underbrace{\sum_{x = 0}^{34}(1/1.03)^{x+1}p(x)}_{\text{For }X<35} + \underbrace{\sum_{x = 35}^{71} (1/1.03)^{34 + 1}p(x)}_{\text{For } \geq 35}\right)\right] 
+$$
+
+Vi ser at det siste leddet blir:
+
+$$
+\sum_{x = 35}^{71} (1/1.03)^{34 + 1}p(x) = (1/1.03)^{35}\sum_{x = 35}^{71} p(x) = (1/1.03)^{35}P(X\geq 35)
+$$
+
+Dette gir oss
+\begin{equation}
+E[g(X)] = \frac{1 - \sum_{x = 0}^{34}(1/1.03)^{x+1}p(x) - (1/1.03)^{35}P(X\geq 35)}{1-(1/1.03)}
+\end{equation}
+
+\subsection*{i)}
+
+Bruker jeg koden gitt nederst i dokumentet, så finner jeg at
+
+$$
+E[g(X)] = \underline{\underline{21.5649}}
+$$
+
+\subsection*{j)}
+
+Bruker vi at 
+
+$$
+K\cdot E[g(X)] = E[h(X)]
+$$
+
+Så kan vi finne at premien mannen må betale i året er 
+
+$$
+K = \frac{E[h(X)]}{E[g(X)]} = \frac{387149}{21.5649} = \underline{\underline{17952.4}}
+$$
+
+Det betyr at vi har funnet at mannen må betale en premie på $K = 17952.4$ kr per år for forsikringen.
+
+\newpage
+
+\section*{Appendix: Koder:}
+
+\lstinputlisting{opp2.py}
+
+
+\end{document}
+
+
